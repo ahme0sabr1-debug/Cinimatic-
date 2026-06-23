@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, inital-scale=1.0" />
+<title></title>
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cinematic - المنصة السينمائية الأولى عالمياً">
+    <title>Cinematic - المنصة السينمائية الأولى</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --accent: #e8b86d;
+            --accent-light: #f5d89a;
+            --accent-dark: #c9a04a;
+            --bg-primary: #0d0d1a;
+            --bg-secondary: #13132a;
+            --bg-tertiary: #1a1a35;
+            --bg-card: rgba(20, 20, 40, 0.5);
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #f0e6d3;
+            --text-secondary: #a09880;
+            --text-muted: #6b6560;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 10% 20%, rgba(232,184,109,0.04) 0%, transparent 50%),
+                        radial-gradient(ellipse at 90% 80%, rgba(192,57,43,0.03) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 50%, rgba(39,174,96,0.02) 0%, transparent 70%);
+            pointer-events: none; z-index: 1;
+        }
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="3" height="3"><rect width="1" height="1" fill="rgba(255,255,255,0.008)"/></svg>');
+            pointer-events: none; z-index: 9999;
+        }
+
+        .navbar {
+            padding: 1rem 0; background: transparent; position: fixed; width: 100%; top: 0; z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+        .navbar.scrolled {
+            background: rgba(13,13,26,0.88); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(232,184,109,0.08); padding: 0.7rem 0; box-shadow: 0 4px 30px rgba(0,0,0,0.6);
+        }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-size: 1.8rem; font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent), var(--accent-dark));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-decoration: none; transition: all 0.3s;
+        }
+        .logo:hover { transform: scale(1.05); }
+        .nav-buttons { display: flex; gap: 0.5rem; align-items: center; }
+        .btn-outline-accent {
+            border: 1px solid rgba(232,184,109,0.3); color: var(--accent); background: transparent;
+            font-weight: 600; border-radius: 50px; padding: 0.5rem 1.6rem; font-size: 0.85rem;
+            transition: all 0.3s; text-decoration: none; white-space: nowrap; cursor: pointer;
+        }
+        .btn-outline-accent:hover { background: rgba(232,184,109,0.08); border-color: var(--accent); transform: translateY(-2px); }
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border: none;
+            color: #1a1a2e; font-weight: 700; border-radius: 50px; padding: 0.55rem 2rem;
+            font-size: 0.88rem; transition: all 0.3s; box-shadow: 0 8px 25px rgba(232,184,109,0.3);
+            text-decoration: none; white-space: nowrap; display: inline-block; cursor: pointer;
+        }
+        .btn-accent:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(232,184,109,0.45); }
+        .btn-text { display: inline; }
+        .btn-icon { display: none; }
+        .user-welcome { color: var(--accent); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+        .btn-logout { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 0.8rem; padding: 0.3rem 1rem; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
+        .btn-logout:hover { background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.3); }
+        @media (max-width: 576px) {
+            .logo { font-size: 1.5rem; }
+            .btn-outline-accent, .btn-accent { padding: 0.4rem 1rem; font-size: 0.78rem; }
+            .btn-text { display: none; }
+            .btn-icon { display: inline; }
+        }
+
+        .hero {
+            position: relative; min-height: 100vh; display: flex; align-items: center;
+            background: var(--bg-primary); overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: grid; grid-template-columns: repeat(5,1fr); grid-template-rows: repeat(4,1fr);
+            opacity: 0.55; z-index: 2; filter: brightness(0.6) contrast(1.15) sepia(0.2);
+            transform: scale(1.08);
+        }
+        .hero-bg img, .placeholder-poster { width: 100%; height: 100%; object-fit: cover; }
+        .placeholder-poster {
+            background: linear-gradient(135deg, #2c2c3a, #1a1a2e);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; color: #f8c291; text-align: center;
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(160deg, rgba(13,13,26,0.8) 0%, rgba(13,13,26,0.45) 35%,
+                        rgba(13,13,26,0.25) 55%, rgba(13,13,26,0.7) 85%, rgba(13,13,26,0.95) 100%);
+            z-index: 3;
+        }
+        .hero-content { position: relative; z-index: 4; }
+        .hero h1 {
+            font-size: clamp(2.8rem, 9vw, 5rem); font-weight: 900; line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to left, #f5d89a, #e8b86d, #c9a04a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: clamp(1.05rem, 2.5vw, 1.25rem); color: var(--text-secondary); max-width: 600px; margin-bottom: 2.5rem; }
+        .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+        .section-padding { padding: 100px 0; position: relative; overflow: hidden; }
+        .section-title {
+            font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 900; margin-bottom: 1rem;
+            background: linear-gradient(to left, #f5d89a, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        .section-line { width: 80px; height: 3px; background: linear-gradient(to left, var(--accent-dark), var(--accent-light)); border-radius: 3px; margin: 1rem auto 1.5rem; }
+        .section-subtitle { color: var(--text-secondary); font-size: 1.05rem; max-width: 500px; margin: 0 auto; }
+
+        .poster-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: grid; grid-template-columns: repeat(5,1fr); grid-template-rows: repeat(4,1fr);
+            opacity: 0.28; z-index: 0; filter: brightness(0.75) contrast(1.1) sepia(0.15);
+            transform: scale(1.05);
+        }
+        .pricing-poster-bg { opacity: 0.18; }
+        .poster-bg img, .poster-bg .placeholder-poster { width: 100%; height: 100%; object-fit: cover; }
+
+        .feature-card {
+            background: var(--bg-card); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border-glass); border-radius: 24px; padding: 1.5rem;
+            display: flex; align-items: flex-start; gap: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1); height: 100%; position: relative; overflow: hidden;
+        }
+        .feature-card:hover {
+            border-color: rgba(232,184,109,0.3); transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 30px rgba(232,184,109,0.08);
+            background: rgba(25,25,45,0.7);
+        }
+        .feature-icon { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; flex-shrink: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .feature-text h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+        .feature-text p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.7; }
+
+        .pricing-card {
+            background: var(--bg-card); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border-glass); border-radius: 30px; padding: 2rem 1.5rem;
+            text-align: center; transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            height: 100%; max-width: 280px; margin: 0 auto; position: relative; overflow: hidden;
+        }
+        .pricing-card.featured {
+            border: 2px solid var(--accent); background: rgba(232,184,109,0.08);
+            transform: scale(1.05); box-shadow: 0 25px 50px rgba(232,184,109,0.2);
+        }
+        .pricing-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.7); }
+        .pricing-card h5 { font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 700; }
+        .price { font-size: 2.2rem; font-weight: 900; color: var(--accent); margin: 0.8rem 0; }
+        .price small { font-size: 0.9rem; color: var(--text-secondary); font-weight: 400; }
+        .badge-accent {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #1a1a2e; font-weight: 700; padding: 0.3rem 1.8rem; border-radius: 50px;
+            font-size: 0.82rem; display: inline-block; margin-bottom: 1rem;
+        }
+
+        .app-section-wrapper {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            border-radius: 35px; padding: 3.5rem 2.5rem; position: relative; overflow: hidden;
+            border: 1px solid rgba(232,184,109,0.06); box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+        .app-badge {
+            background: rgba(232,184,109,0.15); border: 1px solid rgba(232,184,109,0.3);
+            color: var(--accent); font-weight: 600; padding: 0.4rem 2rem; border-radius: 50px;
+            font-size: 0.9rem; display: inline-block; margin-bottom: 1.5rem;
+        }
+
+        footer {
+            background: #080815; border-top: 1px solid rgba(232,184,109,0.05);
+            padding: 3rem 0; color: var(--text-secondary); font-size: 0.9rem;
+        }
+        footer a { color: var(--text-secondary); text-decoration: none; margin: 0 15px; }
+        footer a:hover { color: var(--accent); }
+        .social-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; border-radius: 50%; background: rgba(232,184,109,0.05);
+            color: var(--accent); margin: 0 8px; font-size: 1.4rem; transition: all 0.3s;
+            border: 1px solid rgba(232,184,109,0.1);
+        }
+        .social-icon:hover { background: var(--accent); color: #1a1a2e; transform: translateY(-5px); }
+
+        .modal-content {
+            background: #151528; color: #fff; border: 1px solid rgba(232,184,109,0.1);
+            border-radius: 28px; box-shadow: 0 30px 60px rgba(0,0,0,0.7); backdrop-filter: blur(20px);
+        }
+        .modal-header { border-bottom: 1px solid rgba(232,184,109,0.08); padding: 1.5rem 1.8rem; }
+        .modal-title { color: var(--accent); font-weight: 700; font-size: 1.4rem; }
+        .form-control {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(232,184,109,0.12);
+            color: #fff; border-radius: 16px; padding: 0.9rem 1.3rem; font-size: 0.9rem; transition: all 0.3s;
+        }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(232,184,109,0.2); }
+        .form-label { color: var(--text-secondary); font-weight: 600; margin-bottom: 0.5rem; }
+        .alert-error { background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); color: #e74c3c; border-radius: 12px; padding: 0.8rem; margin-bottom: 1rem; display: none; }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 1.5rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .section-padding { padding: 70px 0; }
+            .section-title { font-size: 1.7rem; }
+            .feature-card { padding: 1.2rem; }
+            .feature-icon { width: 50px; height: 50px; font-size: 1.4rem; }
+            .pricing-card { max-width: 240px; padding: 1.5rem 1rem; }
+            .price { font-size: 1.8rem; }
+            .poster-bg { grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(6,1fr); }
+            .hero-bg { grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(6,1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar" id="navbar">
+            <div class="container">
+                <a href="index.html" class="logo">✦ Cinematic</a>
+                <div class="nav-buttons" id="navButtons">
+                    <a class="btn-outline-accent" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <span class="btn-text">تسجيل الدخول</span>
+                        <span class="btn-icon"><i class="fas fa-sign-in-alt"></i></span>
+                    </a>
+                    <a class="btn-accent" href="signup.html">
+                        <span class="btn-text">اشترك الآن</span>
+                        <span class="btn-icon"><i class="fas fa-user-plus"></i></span>
+                    </a>
+                </div>
+                <div class="user-welcome" id="userWelcome" style="display:none;">
+                    <i class="fas fa-user-circle"></i> <span id="userName"></span>
+                    <button class="btn-logout" onclick="handleLogout()">تسجيل الخروج</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-bg" id="heroPosters"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <div class="row">
+                <div class="col-lg-7" data-aos="fade-up">
+                    <span class="hero-badge" style="display:inline-block;background:rgba(232,184,109,0.1);border:1px solid rgba(232,184,109,0.2);color:var(--accent);padding:0.4rem 1.8rem;border-radius:50px;font-size:0.9rem;font-weight:600;margin-bottom:1.5rem;">✨ المنصة الأولى عربياً</span>
+                    <h1>سينما بلا حدود</h1>
+                    <p>المنصة العربية الأضخم لمشاهدة الأفلام والمسلسلات. بث مباشر، جودة 4K، وتغطية حصرية لأهم المهرجانات.</p>
+                    <div class="hero-buttons">
+                        <a class="btn-accent btn-lg" href="signup.html">ابدأ الآن</a>
+                        <a href="#" class="btn-outline-accent">معرفة المزيد</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- المميزات -->
+    <section class="section-padding" style="background: var(--bg-secondary);">
+        <div class="poster-bg" id="featuresPosters"></div>
+        <div class="container" style="position:relative;z-index:2;">
+            <div class="text-center mb-5">
+                <h2 class="section-title" data-aos="fade-up">لماذا Cinematic؟</h2>
+                <div class="section-line"></div>
+                <p class="section-subtitle">مميزات حصرية تجعل تجربتك السينمائية استثنائية</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:linear-gradient(135deg,#e74c3c,#c0392b);"><i class="fas fa-play"></i></div>
+                        <div class="feature-text"><h4>مشاهدة بدون توقف</h4><p>دون إعلانات، مع تعويض فوري عند الانقطاع.</p></div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:linear-gradient(135deg,#3498db,#2980b9);"><i class="fas fa-forward"></i></div>
+                        <div class="feature-text"><h4>تجربة مشاهدة ذكية</h4><p>تخطي المقدمات والانتقال التلقائي.</p></div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:linear-gradient(135deg,#2ecc71,#27ae60);"><i class="fas fa-download"></i></div>
+                        <div class="feature-text"><h4>تحميل ومشاهدة لاحقاً</h4><p>نزّل أعمالك بجودة 4K دون إنترنت.</p></div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);"><i class="fas fa-shield-alt"></i></div>
+                        <div class="feature-text"><h4>خصوصية وأمان تام</h4><p>5 ملفات شخصية مشفرة بالكامل.</p></div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:linear-gradient(135deg,#f39c12,#e67e22);"><i class="fas fa-child"></i></div>
+                        <div class="feature-text"><h4>عالم الأطفال الآمن</h4><p>محتوى ممتع مع رقابة أبوية ذكية.</p></div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background:linear-gradient(135deg,#1abc9c,#16a085);"><i class="fas fa-tags"></i></div>
+                        <div class="feature-text"><h4>أسعار تنافسية</h4><p>باقات مرنة تبدأ من 19 ريال.</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- الباقات -->
+    <section class="section-padding" style="background: var(--bg-primary);">
+        <div class="poster-bg pricing-poster-bg" id="pricingPosters"></div>
+        <div class="container" style="position:relative;z-index:2;">
+            <div class="text-center mb-5">
+                <h2 class="section-title" data-aos="fade-up">اختر باقتك</h2>
+                <div class="section-line"></div>
+                <p class="section-subtitle">خطط أسعار مرنة تناسب احتياجاتك</p>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="pricing-card"><h5>شهر واحد</h5><div class="price">19 <small>ريال</small></div><p>30 يوم</p><a class="btn-outline-accent" href="signup.html">اشترك الآن</a></div>
+                </div>
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="pricing-card"><h5>3 أشهر</h5><div class="price">49 <small>ريال</small></div><p>90 يوم</p><a class="btn-outline-accent" href="signup.html">اشترك الآن</a></div>
+                </div>
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="pricing-card featured"><span class="badge-accent">✦ الأكثر شيوعاً</span><h5>6 أشهر</h5><div class="price">79 <small>ريال</small></div><p>180 يوم | وفر 35%</p><a class="btn-accent" href="signup.html">اشترك الآن</a></div>
+                </div>
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="pricing-card"><h5>12 شهر</h5><div class="price">119 <small>ريال</small></div><p>365 يوم | أفضل قيمة</p><a class="btn-outline-accent" href="signup.html">اشترك الآن</a></div>
+                </div>
+            </div>
+            <p class="text-center mt-4" style="color:var(--text-muted);font-size:0.85rem;">* الأسعار غير شاملة للضريبة. للاستخدام الشخصي فقط.</p>
+        </div>
+    </section>
+
+    <!-- التطبيق -->
+    <section class="section-padding" style="background: var(--bg-primary);">
+        <div class="container">
+            <div class="app-section-wrapper">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0 text-center text-lg-start" data-aos="fade-right">
+                        <span class="app-badge"><i class="far fa-clock ms-2"></i>قريباً</span>
+                        <h2 style="font-weight:900;font-size:clamp(1.8rem,5vw,2.5rem);margin-bottom:1rem;">تطبيق Cinematic</h2>
+                        <p style="color:var(--text-secondary);">قريباً على Google Play و App Store.</p>
+                        <form class="mt-4 d-flex flex-column flex-sm-row gap-2" onsubmit="alert('شكراً لك!');return false;">
+                            <input type="email" class="form-control" placeholder="بريدك الإلكتروني" required>
+                            <button type="submit" class="btn-accent">أخبرني</button>
+                        </form>
+                    </div>
+                    <div class="col-lg-4 offset-lg-2 text-center" data-aos="fade-left">
+                        <div style="background:#0e0e16;border-radius:45px;padding:12px;box-shadow:0 35px 60px rgba(0,0,0,0.9);border:2px solid rgba(232,184,109,0.15);max-width:230px;margin:0 auto;">
+                            <div style="background:linear-gradient(145deg,#1a1a2c,#0e0e1a);border-radius:32px;padding:35px 15px;text-align:center;color:var(--accent);">
+                                <i class="fas fa-play-circle" style="font-size:2.8rem;"></i>
+                                <p class="mt-3 mb-0 fw-bold" style="font-size:1.1rem;">Cinematic</p>
+                                <small style="color:#ccc;">أفلامك في جيبك</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="mb-4 d-flex flex-wrap justify-content-center gap-3">
+                <a data-bs-toggle="modal" data-bs-target="#faqModal">الأسئلة الشائعة</a>
+                <span style="color:rgba(232,184,109,0.15);">|</span>
+                <a data-bs-toggle="modal" data-bs-target="#contactModal">اتصل بنا</a>
+                <span style="color:rgba(232,184,109,0.15);">|</span>
+                <a data-bs-toggle="modal" data-bs-target="#privacyModal">سياسة الخصوصية</a>
+                <span style="color:rgba(232,184,109,0.15);">|</span>
+                <a data-bs-toggle="modal" data-bs-target="#termsModal">شروط الاستخدام</a>
+            </div>
+            <div class="mb-4">
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-x-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+            </div>
+            <p class="mb-0" style="color:var(--text-muted);">© 2026 Cinematic. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- مودال تسجيل الدخول فقط -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">🔑 تسجيل الدخول</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="alert-error" id="loginError"></div>
+                    <form onsubmit="return handleLogin(event)">
+                        <div class="mb-3"><label class="form-label">البريد</label><input type="email" class="form-control" id="loginEmail" required></div>
+                        <div class="mb-3"><label class="form-label">كلمة المرور</label><input type="password" class="form-control" id="loginPassword" required></div>
+                        <button type="submit" class="btn-accent w-100">تسجيل الدخول</button>
+                    </form>
+                    <div class="text-center mt-3" style="color:var(--text-secondary);">ليس لديك حساب؟ <a href="signup.html" style="color:var(--accent);">إنشاء حساب</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- موديلات أخرى -->
+    <div class="modal fade" id="faqModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">❓ الأسئلة الشائعة</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><h6>ما هي Cinematic؟</h6><p>منصة أفلام ومسلسلات بجودة 4K.</p><h6>كيف أشترك؟</h6><p>اختر باقتك واضغط اشترك الآن.</p></div></div></div></div>
+    <div class="modal fade" id="contactModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">✉️ اتصل بنا</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><form onsubmit="return handleContactSubmit(event)"><div class="mb-3"><input type="text" class="form-control" id="contactName" placeholder="الاسم" required></div><div class="mb-3"><input type="email" class="form-control" id="contactEmail" placeholder="البريد" required></div><div class="mb-3"><textarea class="form-control" id="contactMessage" rows="3" placeholder="الرسالة" required></textarea></div><button type="submit" class="btn-accent w-100">إرسال</button></form></div></div></div></div>
+    <div class="modal fade" id="privacyModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">🔒 سياسة الخصوصية</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>نحن نحمي بياناتك ولا نشاركها.</p></div></div></div></div>
+    <div class="modal fade" id="termsModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">📋 شروط الاستخدام</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>الاستخدام الشخصي فقط.</p></div></div></div></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgrJpuyiJ3sWFBOxke8UzUOEvPlgjABU0",
+            authDomain: "cinematic5.firebaseapp.com",
+            databaseURL: "https://cinematic5-default-rtdb.firebaseio.com",
+            projectId: "cinematic5",
+            storageBucket: "cinematic5.firebasestorage.app",
+            messagingSenderId: "409626275338",
+            appId: "1:409626275338:web:7fe11f4fd744e428fcf9f3",
+            measurementId: "G-QXLPG2T5RH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            try {
+                errorDiv.style.display = 'none';
+                await signInWithEmailAndPassword(auth, email, password);
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+            } catch (error) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'بيانات الدخول غير صحيحة';
+            }
+            return false;
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('navButtons').style.display = 'none';
+                document.getElementById('userWelcome').style.display = 'flex';
+                document.getElementById('userName').textContent = user.email || '';
+            } else {
+                document.getElementById('navButtons').style.display = 'flex';
+                document.getElementById('userWelcome').style.display = 'none';
+            }
+        });
+    </script>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init({ duration: 800, once: true });
+            fillAllPosters();
+        });
+
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        const guaranteedPosters = [
+            { id: '9gk7adHYe8x0ADJ3b8q2KZk2KMg.jpg', name: 'Inception' },
+            { id: 'gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', name: 'Interstellar' },
+            { id: 'f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg', name: 'The Matrix' },
+            { id: 'udDclJoHjfjb8Ekgsd4FDteOkCU.jpg', name: 'Joker' },
+            { id: '7IiTTgloJzvGI1TAYymCfbfl3vT.jpg', name: 'Parasite' },
+            { id: 'qJ2tW6WMUDux911BytA6Bd4UcdS.jpg', name: 'The Dark Knight' },
+            { id: 'd5iIlFn5s0ImszYzBPb8JPIfbXD.jpg', name: 'Pulp Fiction' },
+            { id: 'pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg', name: 'Fight Club' },
+            { id: 'rPpxrz8o0svAPCLucjsEdMXwDZS.jpg', name: 'Avengers: Endgame' },
+            { id: '6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg', name: 'The Shawshank Redemption' },
+            { id: '7WUHnWGx5OO145IRpPD7Q2HJJ.jpg', name: 'Game of Thrones' },
+            { id: 'ggFHVNu6YYI5L9pCfOacjENRG3Q.jpg', name: 'Breaking Bad' },
+            { id: 'x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg', name: 'Stranger Things' },
+            { id: '7vjaCdMw15FEbXyLQTVa04URsPk.jpg', name: 'The Witcher' },
+            { id: 'reEMJA1uzscC1VZxnAJhTYB3Pxr.jpg', name: 'Money Heist' },
+            { id: '1FQgMUb8a7rG5P1GxJWBhV3tXnQ.jpg', name: 'The Crown' },
+            { id: '4hD0lVz2rJWvFWSvzOHlQoBx6CS.jpg', name: 'Dark' },
+            { id: '9z6lKkDY2RNRhYJcGxwXxBpY6pB.jpg', name: 'Peaky Blinders' },
+            { id: '7WTsnHkbKHEC4zy5rJRkqWU6d2p.jpg', name: 'Sherlock' },
+            { id: 'z2yahl2uefxDCl0nogcRBjru4li.jpg', name: 'House of the Dragon' }
+        ];
+
+        function createPosterElement(item) {
+            const img = document.createElement('img');
+            img.src = 'https://image.tmdb.org/t/p/w342/' + item.id;
+            img.alt = item.name;
+            img.loading = 'lazy';
+            img.onerror = function() {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'placeholder-poster';
+                placeholder.textContent = item.name;
+                this.parentNode.replaceChild(placeholder, this);
+            };
+            return img;
+        }
+
+        function fillPosters(containerId, count) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            const shuffled = [...guaranteedPosters].sort(() => Math.random() - 0.5);
+            for (let i = 0; i < count; i++) {
+                const item = shuffled[i % shuffled.length];
+                container.appendChild(createPosterElement(item));
+            }
+        }
+
+        function fillAllPosters() {
+            fillPosters('heroPosters', 20);
+            fillPosters('featuresPosters', 20);
+            fillPosters('pricingPosters', 20);
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            window.location.href = `mailto:cenimatic1052000@gmail.com?subject=${encodeURIComponent('رسالة من ' + name)}&body=${encodeURIComponent(message + '\n\nالبريد: ' + email)}`;
+            return false;
+        }
+    </script>
+</body>
+</html>
+<script type="text/javascript">
+(function() {
+
+})();
+</script>
+</body>
+</html>
